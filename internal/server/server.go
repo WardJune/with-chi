@@ -8,15 +8,13 @@ import (
 )
 
 func New(cfg config.Config) *http.Server {
-
 	router := NewRouter()
 
-	server := &http.Server{
+	return &http.Server{
 		Addr:         ":" + cfg.Port,
 		Handler:      router,
 		IdleTimeout:  time.Minute,
 		ReadTimeout:  10 * time.Second,
 		WriteTimeout: 30 * time.Second,
 	}
-	return server
 }

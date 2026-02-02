@@ -2,7 +2,6 @@ package transport
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 
 	"github.com/go-playground/validator/v10"
@@ -24,8 +23,6 @@ func Success(w http.ResponseWriter, status int, data any) {
 	if err := json.NewEncoder(w).Encode(data); err != nil {
 		return
 	}
-
-	fmt.Println(data)
 }
 
 func Error(w http.ResponseWriter, status int, code, message string) {

@@ -1,6 +1,8 @@
 package server
 
 import (
+	"time"
+
 	"github.com/WardJune/with-chi/internal/handler"
 	"github.com/WardJune/with-chi/internal/middleware"
 	"github.com/go-chi/chi/v5"
@@ -10,6 +12,7 @@ import (
 func NewRouter() *chi.Mux {
 	r := chi.NewRouter()
 
+	r.Use(middleware.LoadShedding(100, 200*time.Millisecond))
 	r.Use(middleware.Logging)
 	r.Use(middleware.Recovery)
 
