@@ -1,7 +1,6 @@
 package middleware
 
 import (
-	"fmt"
 	"net/http"
 	"time"
 )
@@ -21,7 +20,6 @@ func LoadShedding(max int, wait time.Duration) func(http.Handler) http.Handler {
 				return
 			case <-time.After(wait):
 				w.Header().Set("Retry-After", "5")
-				fmt.Println("server overload")
 				http.Error(w, "server overload", http.StatusServiceUnavailable)
 			}
 		})
