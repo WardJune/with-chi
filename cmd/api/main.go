@@ -38,7 +38,7 @@ func main() {
 	logger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
 	slog.SetDefault(logger)
 
-	srv := server.New()
+	srv := server.New(cfg)
 
 	done := make(chan bool, 1)
 

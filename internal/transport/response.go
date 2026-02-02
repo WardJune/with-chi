@@ -2,10 +2,16 @@ package transport
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/go-playground/validator/v10"
 )
+
+type ErrResponse struct {
+	Code    string `json:"code"`
+	Message string `json:"message"`
+}
 
 func DecodeJson(r *http.Request, v any) error {
 	return json.NewDecoder(r.Body).Decode(v)
@@ -15,9 +21,11 @@ func Success(w http.ResponseWriter, status int, data any) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(status)
 
-	if data != nil {
-		json.NewEncoder(w).Encode(data)
+	if err := json.NewEncoder(w).Encode(data); err != nil {
+		return
 	}
+
+	fmt.Println(data)
 }
 
 func Error(w http.ResponseWriter, status int, code, message string) {

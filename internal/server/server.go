@@ -7,9 +7,8 @@ import (
 	"github.com/WardJune/with-chi/internal/config"
 )
 
-func New() *http.Server {
+func New(cfg config.Config) *http.Server {
 
-	cfg := config.Load()
 	router := NewRouter()
 
 	server := &http.Server{
