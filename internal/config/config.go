@@ -9,7 +9,7 @@ type Config struct {
 func Load() Config {
 	port := os.Getenv("PORT")
 	if port == "" {
-		port = "3002"
+		port = "8080"
 	}
 
 	return Config{Port: port}

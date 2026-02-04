@@ -11,6 +11,7 @@ import (
 
 	"github.com/WardJune/with-chi/internal/config"
 	"github.com/WardJune/with-chi/internal/server"
+	"github.com/WardJune/with-chi/pkg/metrics"
 )
 
 func gracefulShutdown(server *http.Server, done chan bool) {
@@ -39,6 +40,7 @@ func main() {
 	slog.SetDefault(logger)
 
 	srv := server.New(cfg)
+	metrics.Register()
 
 	done := make(chan bool, 1)
 

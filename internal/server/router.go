@@ -7,12 +7,12 @@ import (
 	"github.com/WardJune/with-chi/internal/middleware"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/cors"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
 func NewRouter() *chi.Mux {
 	r := chi.NewRouter()
 
-	r.Use(middleware.LoadShedding(100, 200*time.Millisecond))
 	r.Use(middleware.Logging)
 	r.Use(middleware.Recovery)
 
@@ -25,8 +25,13 @@ func NewRouter() *chi.Mux {
 		MaxAge:           300,
 	}))
 
-	r.Get("/", handler.HelloWorldHandler)
-	r.Get("/health", handler.HealthHandler)
+	r.Handle("/metrics", promhttp.Handler())
+
+	r.Group(func(r chi.Router) {
+		r.Use(middleware.LoadShedding(20, 400*time.Millisecond))
+		r.Get("/", handler.HelloWorldHandler)
+		r.Get("/health", handler.HealthHandler)
+	})
 
 	return r
 }
