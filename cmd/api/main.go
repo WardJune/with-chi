@@ -6,12 +6,21 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"runtime"
+	"sync/atomic"
 	"syscall"
 	"time"
 
 	"github.com/WardJune/with-chi/internal/config"
+	"github.com/WardJune/with-chi/internal/limiter"
 	"github.com/WardJune/with-chi/internal/server"
 	"github.com/WardJune/with-chi/pkg/metrics"
+)
+
+var (
+	connNew    atomic.Int64
+	connActive atomic.Int64
+	connIdle   atomic.Int64
 )
 
 func gracefulShutdown(server *http.Server, done chan bool) {
@@ -39,8 +48,28 @@ func main() {
 	logger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
 	slog.SetDefault(logger)
 
+	go func() {
+		for range time.Tick(2 * time.Second) {
+			slog.Info("runtime", "goroutine", runtime.NumGoroutine())
+			slog.Info("conn", "new", connNew.Load(), "active", connActive.Load(), "idle", connIdle.Load())
+		}
+	}()
+
 	srv := server.New(cfg)
-	metrics.Register()
+	extraMetrics := limiter.Metrics()
+	metrics.Register(extraMetrics...)
+
+	// srv.ConnState = func(conn net.Conn, state http.ConnState) {
+	// 	switch state {
+	// 	case http.StateNew:
+	// 		connNew.Add(1)
+	// 	case http.StateActive:
+	// 		connActive.Add(1)
+	// 	case http.StateIdle:
+	// 		connIdle.Add(1)
+	// 	}
+	// }
+	// srv.SetKeepAlivesEnabled(false)
 
 	done := make(chan bool, 1)
 

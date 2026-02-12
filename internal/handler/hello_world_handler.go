@@ -13,7 +13,7 @@ type HelloWorldResponse struct {
 }
 
 func HelloWorldHandler(w http.ResponseWriter, r *http.Request) {
-	time.Sleep(500 * time.Millisecond)
+	time.Sleep(200 * time.Millisecond)
 
 	transport.Success(w, 200, HelloWorldResponse{
 		Message: "Hello World",

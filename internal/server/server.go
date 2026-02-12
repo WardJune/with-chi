@@ -11,10 +11,12 @@ func New(cfg config.Config) *http.Server {
 	router := NewRouter()
 
 	return &http.Server{
-		Addr:         "0.0.0.0:" + cfg.Port,
-		Handler:      router,
-		IdleTimeout:  time.Minute,
-		ReadTimeout:  10 * time.Second,
-		WriteTimeout: 30 * time.Second,
+		Addr:        "0.0.0.0:" + cfg.Port,
+		Handler:     router,
+		IdleTimeout: time.Minute,
+		// ReadTimeout:       5 * time.Second,
+		ReadHeaderTimeout: 2 * time.Second,
+		// WriteTimeout:      30 * time.Second,
+		// MaxHeaderBytes:    1 << 20,
 	}
 }

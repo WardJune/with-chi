@@ -19,6 +19,10 @@ var (
 	})
 )
 
-func Register() {
+func Register(extra ...prometheus.Collector) {
 	prometheus.MustRegister(InFlight, ShedTotal, RequestDuration)
+
+	for _, c := range extra {
+		prometheus.MustRegister(c)
+	}
 }
